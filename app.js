@@ -50,7 +50,7 @@ app.use("/host", hostRouter);
 // 404 Handler
 app.use(errorControllers.error404);
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on address http://localhost:${PORT}`);
 });
