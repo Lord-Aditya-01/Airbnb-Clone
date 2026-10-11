@@ -1,0 +1,20 @@
+[
+  {
+    "id": "user-host-1",
+    "firstName": "Sarah",
+    "lastName": "Jenkins",
+    "email": "host@airbnb.com",
+    "password": "$2b$10$OQ1bQ6AEIxkCa1KL3OYPier6WvwAX5LA7.MyMfKJrlLhdsDzNxxzy",
+    "userType": "host",
+    "createdAt": "2026-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "user-guest-1",
+    "firstName": "Alex",
+    "lastName": "Morgan",
+    "email": "guest@airbnb.com",
+    "password": "$2b$10$OQ1bQ6AEIxkCa1KL3OYPier6WvwAX5LA7.MyMfKJrlLhdsDzNxxzy",
+    "userType": "guest",
+    "createdAt": "2026-02-10T12:00:00.000Z"
+  }
+]

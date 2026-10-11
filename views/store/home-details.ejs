@@ -1,0 +1,420 @@
+<%- include('../partials/head') %>
+  </head>
+  <body class="bg-white flex flex-col min-h-screen">
+    <%- include('../partials/nav') %>
+    <%- include('../partials/flash') %>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+      
+      <!-- Stay Title & Actions Bar -->
+      <div class="mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight mb-2"><%= home.houseName %></h1>
+        <div class="flex flex-wrap items-center justify-between text-sm text-gray-700 gap-4">
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="flex items-center font-semibold text-gray-900">
+              <i class="fas fa-star text-black text-xs mr-1.5"></i> <%= home.rating %>
+            </span>
+            <span>·</span>
+            <a href="#reviews-section" class="font-semibold underline hover:text-black">
+              <%= home.reviews ? home.reviews.length : 0 %> reviews
+            </a>
+            <span>·</span>
+            <% if (parseFloat(home.rating) >= 4.9) { %>
+              <span class="inline-flex items-center text-xs font-semibold px-2 py-0.5 rounded bg-rose-50 text-[#FF385C]">
+                <i class="fas fa-medal mr-1"></i> Superhost
+              </span>
+              <span>·</span>
+            <% } %>
+            <span class="font-medium underline"><%= home.location %></span>
+          </div>
+
+          <!-- Share & Save Buttons -->
+          <div class="flex items-center gap-4">
+            <button type="button" onclick="navigator.clipboard.writeText(window.location.href); alert('Listing link copied to clipboard!');" class="flex items-center gap-2 text-sm font-semibold hover:bg-gray-100 py-2 px-3 rounded-lg transition">
+              <i class="fas fa-arrow-up-from-bracket text-xs"></i>
+              <span>Share</span>
+            </button>
+            <div class="flex items-center gap-2">
+              <%- include('../partials/favourite', { home: home }) %>
+              <span class="text-sm font-semibold">Save</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Airbnb Signature Photo Gallery Grid -->
+      <div class="rounded-3xl overflow-hidden mb-10 shadow-sm border border-gray-100">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-2 h-[350px] sm:h-[450px]">
+          <!-- Main Large Photo (Takes 2 cols) -->
+          <div class="md:col-span-2 h-full overflow-hidden">
+            <img 
+              src="<%= home.photoUrl %>" 
+              alt="<%= home.houseName %>" 
+              class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
+            />
+          </div>
+
+          <!-- Side Photos Grid (Takes 2 cols with 2x2 layout) -->
+          <div class="hidden md:grid md:col-span-2 grid-cols-2 gap-2 h-full">
+            <% const photos = home.additionalPhotos && home.additionalPhotos.length > 0 ? home.additionalPhotos : [
+              'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800',
+              'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800',
+              'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
+              'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800'
+            ]; %>
+            <% for (let i = 0; i < 4; i++) { %>
+              <div class="h-[220px] overflow-hidden">
+                <img 
+                  src="<%= photos[i] || home.photoUrl %>" 
+                  alt="Gallery photo <%= i+1 %>" 
+                  class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
+                />
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Layout (2 Columns: Left details, Right sticky reserve card) -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        
+        <!-- Left Column: Details -->
+        <div class="lg:col-span-2 space-y-8">
+          
+          <!-- Host & Capacity Header -->
+          <div class="flex items-center justify-between pb-6 border-b border-gray-200">
+            <div>
+              <h2 class="text-xl font-bold text-gray-900">
+                Entire <%= home.category || 'home' %> hosted by <%= home.hostName || 'Sarah Jenkins' %>
+              </h2>
+              <p class="text-sm text-gray-600 mt-1">
+                <%= home.maxGuests || 4 %> guests · <%= home.bedrooms || 2 %> bedrooms · <%= home.beds || 2 %> beds · <%= home.bathrooms || 1 %> bath
+              </p>
+            </div>
+            <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-rose-500 to-amber-500 text-white flex items-center justify-center text-xl font-bold flex-shrink-0 shadow-md">
+              <%= (home.hostName || 'S').charAt(0).toUpperCase() %>
+            </div>
+          </div>
+
+          <!-- Highlights -->
+          <div class="space-y-5 pb-6 border-b border-gray-200">
+            <div class="flex items-start gap-4">
+              <i class="fas fa-door-open text-gray-700 text-xl mt-1 w-6"></i>
+              <div>
+                <h3 class="text-sm font-bold text-gray-900">Self check-in</h3>
+                <p class="text-xs text-gray-500 mt-0.5">Check yourself in with the smart keypad lock.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <i class="fas fa-location-dot text-gray-700 text-xl mt-1 w-6"></i>
+              <div>
+                <h3 class="text-sm font-bold text-gray-900">Great location</h3>
+                <p class="text-xs text-gray-500 mt-0.5">100% of recent guests gave the location a 5-star rating.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <i class="fas fa-calendar-xmark text-gray-700 text-xl mt-1 w-6"></i>
+              <div>
+                <h3 class="text-sm font-bold text-gray-900">Free cancellation</h3>
+                <p class="text-xs text-gray-500 mt-0.5">Cancel up to 48 hours before check-in for a full refund.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- AirCover Guarantee Badge -->
+          <div class="pb-6 border-b border-gray-200">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl font-black text-[#FF385C]">air</span>
+              <span class="text-xl font-black text-gray-900">cover</span>
+            </div>
+            <p class="text-sm text-gray-600 leading-relaxed">
+              Every booking includes free protection from Host cancellations, listing inaccuracies, and other issues like trouble checking in.
+            </p>
+          </div>
+
+          <!-- Description Section -->
+          <div class="pb-6 border-b border-gray-200">
+            <h3 class="text-lg font-bold text-gray-900 mb-3">About this space</h3>
+            <p class="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
+              <%= home.description || 'Welcome to this serene and stylish getaway. Designed for modern comfort with picturesque views and curated amenities.' %>
+            </p>
+          </div>
+
+          <!-- Amenities Section -->
+          <div class="pb-6 border-b border-gray-200">
+            <h3 class="text-lg font-bold text-gray-900 mb-4">What this place offers</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <% const amenitiesList = (home.amenities && home.amenities.length > 0) ? home.amenities : ['Wifi', 'Kitchen', 'Free parking', 'Air conditioning']; %>
+              <% amenitiesList.forEach(item => { %>
+                <div class="flex items-center gap-3 text-sm text-gray-800">
+                  <div class="w-8 text-center text-gray-600">
+                    <% if (item.toLowerCase().includes('wifi')) { %>
+                      <i class="fas fa-wifi text-base"></i>
+                    <% } else if (item.toLowerCase().includes('pool')) { %>
+                      <i class="fas fa-water-ladder text-base"></i>
+                    <% } else if (item.toLowerCase().includes('park')) { %>
+                      <i class="fas fa-square-parking text-base"></i>
+                    <% } else if (item.toLowerCase().includes('kitchen')) { %>
+                      <i class="fas fa-kitchen-set text-base"></i>
+                    <% } else if (item.toLowerCase().includes('air') || item.toLowerCase().includes('condition')) { %>
+                      <i class="fas fa-snowflake text-base"></i>
+                    <% } else if (item.toLowerCase().includes('beach')) { %>
+                      <i class="fas fa-umbrella-beach text-base"></i>
+                    <% } else if (item.toLowerCase().includes('work')) { %>
+                      <i class="fas fa-laptop text-base"></i>
+                    <% } else if (item.toLowerCase().includes('hot tub') || item.toLowerCase().includes('sauna')) { %>
+                      <i class="fas fa-hot-tub-person text-base"></i>
+                    <% } else if (item.toLowerCase().includes('breakfast')) { %>
+                      <i class="fas fa-utensils text-base"></i>
+                    <% } else if (item.toLowerCase().includes('fire')) { %>
+                      <i class="fas fa-fire text-base"></i>
+                    <% } else { %>
+                      <i class="fas fa-check text-base"></i>
+                    <% } %>
+                  </div>
+                  <span><%= item %></span>
+                </div>
+              <% }) %>
+            </div>
+          </div>
+
+          <!-- Reviews Section -->
+          <div id="reviews-section" class="pt-2">
+            <div class="flex items-center gap-2 mb-6">
+              <i class="fas fa-star text-black text-lg"></i>
+              <h3 class="text-xl font-bold text-gray-900">
+                <%= home.rating %> · <%= home.reviews ? home.reviews.length : 0 %> reviews
+              </h3>
+            </div>
+
+            <!-- Existing Reviews List -->
+            <% if (home.reviews && home.reviews.length > 0) { %>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                <% home.reviews.forEach(review => { %>
+                  <div class="bg-gray-50 p-5 rounded-2xl border border-gray-100">
+                    <div class="flex items-center gap-3 mb-3">
+                      <div class="w-10 h-10 rounded-full bg-gray-300 text-gray-700 flex items-center justify-center font-bold text-sm">
+                        <%= review.userName.charAt(0).toUpperCase() %>
+                      </div>
+                      <div>
+                        <h4 class="text-sm font-bold text-gray-900"><%= review.userName %></h4>
+                        <p class="text-xs text-gray-500"><%= review.date || 'Recent' %></p>
+                      </div>
+                    </div>
+                    <div class="flex items-center mb-2 text-yellow-500 text-xs">
+                      <% for (let r = 0; r < (review.rating || 5); r++) { %>
+                        <i class="fas fa-star mr-0.5"></i>
+                      <% } %>
+                    </div>
+                    <p class="text-xs sm:text-sm text-gray-700 leading-relaxed"><%= review.comment %></p>
+                  </div>
+                <% }) %>
+              </div>
+            <% } else { %>
+              <p class="text-sm text-gray-500 mb-6 italic">No reviews yet. Be the first guest to share your experience!</p>
+            <% } %>
+
+            <!-- Write a Review Form -->
+            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200">
+              <h4 class="text-base font-bold text-gray-900 mb-2">Leave a review</h4>
+              <% if (typeof isAuthenticated !== 'undefined' && isAuthenticated) { %>
+                <form action="/homes/<%= home.id %>/review" method="POST" class="space-y-4">
+                  <div>
+                    <label for="rating" class="block text-xs font-semibold uppercase text-gray-700 mb-1">Rating</label>
+                    <select name="rating" id="rating" class="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white outline-none">
+                      <option value="5">⭐⭐⭐⭐⭐ (5 - Exceptional)</option>
+                      <option value="4">⭐⭐⭐⭐ (4 - Very Good)</option>
+                      <option value="3">⭐⭐⭐ (3 - Average)</option>
+                      <option value="2">⭐⭐ (2 - Below Average)</option>
+                      <option value="1">⭐ (1 - Poor)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="comment" class="block text-xs font-semibold uppercase text-gray-700 mb-1">Your review</label>
+                    <textarea 
+                      name="comment" 
+                      id="comment" 
+                      rows="3" 
+                      required 
+                      placeholder="Share details about your stay, cleanliness, location and amenities..." 
+                      class="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:ring-2 focus:ring-black"></textarea>
+                  </div>
+                  <button type="submit" class="bg-black hover:bg-gray-800 text-white font-semibold py-2.5 px-6 rounded-xl text-sm transition">
+                    Submit Review
+                  </button>
+                </form>
+              <% } else { %>
+                <p class="text-xs text-gray-600 mb-3">Please log in to submit a verified guest review.</p>
+                <a href="/login" class="inline-block bg-black hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded-xl text-xs transition">
+                  Log in to review
+                </a>
+              <% } %>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Right Column: Sticky Airbnb Reservation Card -->
+        <div class="lg:col-span-1">
+          <div class="sticky top-28 bg-white border border-gray-200 rounded-3xl p-6 shadow-xl">
+            
+            <!-- Price and Star Rating Header -->
+            <div class="flex justify-between items-baseline mb-6">
+              <div>
+                <span class="text-2xl font-bold text-gray-900">₹<%= Number(home.price).toLocaleString('en-IN') %></span>
+                <span class="text-sm text-gray-600"> night</span>
+              </div>
+              <div class="flex items-center text-xs font-semibold text-gray-900">
+                <i class="fas fa-star text-black mr-1 text-[11px]"></i>
+                <span><%= home.rating %></span>
+                <span class="text-gray-400 mx-1">·</span>
+                <a href="#reviews-section" class="underline text-gray-500 font-normal"><%= home.reviews ? home.reviews.length : 0 %> reviews</a>
+              </div>
+            </div>
+
+            <!-- Booking Form -->
+            <form action="/book/<%= home.id %>" method="POST" id="booking-form" class="space-y-4">
+              
+              <!-- Check-in & Check-out inputs -->
+              <div class="border border-gray-300 rounded-2xl overflow-hidden divide-y divide-gray-300">
+                <div class="grid grid-cols-2 divide-x divide-gray-300">
+                  <div class="p-3">
+                    <label for="checkIn" class="block text-[10px] font-bold uppercase tracking-wider text-gray-800">Check-in</label>
+                    <input 
+                      type="date" 
+                      id="checkIn" 
+                      name="checkIn" 
+                      required 
+                      class="w-full text-xs font-medium text-gray-900 bg-transparent outline-none mt-0.5 cursor-pointer"
+                    />
+                  </div>
+                  <div class="p-3">
+                    <label for="checkOut" class="block text-[10px] font-bold uppercase tracking-wider text-gray-800">Checkout</label>
+                    <input 
+                      type="date" 
+                      id="checkOut" 
+                      name="checkOut" 
+                      required 
+                      class="w-full text-xs font-medium text-gray-900 bg-transparent outline-none mt-0.5 cursor-pointer"
+                    />
+                  </div>
+                </div>
+
+                <!-- Guests Select -->
+                <div class="p-3">
+                  <label for="guests" class="block text-[10px] font-bold uppercase tracking-wider text-gray-800">Guests</label>
+                  <select id="guests" name="guests" class="w-full text-xs font-medium text-gray-900 bg-transparent outline-none mt-0.5 cursor-pointer">
+                    <% for (let g = 1; g <= (home.maxGuests || 4); g++) { %>
+                      <option value="<%= g %>"><%= g %> <%= g === 1 ? 'guest' : 'guests' %></option>
+                    <% } %>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Reserve CTA Button -->
+              <button 
+                type="submit" 
+                class="w-full bg-[#FF385C] hover:bg-[#E00B41] text-white font-semibold py-3.5 px-4 rounded-xl shadow-md transition duration-200 text-sm tracking-wide">
+                Reserve
+              </button>
+
+              <p class="text-xs text-center text-gray-500 font-normal">You won't be charged yet</p>
+
+              <!-- Dynamic Price Calculation Breakdown -->
+              <div id="price-breakdown" class="space-y-3 pt-4 border-t border-gray-200 text-sm text-gray-700">
+                <div class="flex justify-between">
+                  <span id="night-calc-label">₹<%= Number(home.price).toLocaleString('en-IN') %> x 3 nights</span>
+                  <span id="base-price-val">₹<%= (Number(home.price) * 3).toLocaleString('en-IN') %></span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Cleaning fee</span>
+                  <span id="cleaning-fee-val">₹<%= Math.round(Number(home.price) * 3 * 0.05).toLocaleString('en-IN') %></span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Airbnb service fee</span>
+                  <span id="service-fee-val">₹<%= Math.round(Number(home.price) * 3 * 0.08).toLocaleString('en-IN') %></span>
+                </div>
+                <div class="border-t border-gray-200 pt-3 flex justify-between font-bold text-base text-gray-900">
+                  <span>Total before taxes</span>
+                  <span id="grand-total-val">₹<%= Math.round(Number(home.price) * 3 * 1.13).toLocaleString('en-IN') %></span>
+                </div>
+              </div>
+
+            </form>
+
+            <div class="mt-6 flex items-center gap-3 p-3 bg-gray-50 rounded-2xl text-xs text-gray-600">
+              <i class="fas fa-tag text-[#FF385C] text-sm"></i>
+              <span><strong>Lower price.</strong> Your dates are ₹350 less than average night price.</span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- JavaScript to auto-calculate nights and fees -->
+    <script>
+      (function() {
+        const pricePerNight = <%= Number(home.price) || 1000 %>;
+        const checkIn = document.getElementById('checkIn');
+        const checkOut = document.getElementById('checkOut');
+        const nightLabel = document.getElementById('night-calc-label');
+        const basePriceVal = document.getElementById('base-price-val');
+        const cleaningFeeVal = document.getElementById('cleaning-fee-val');
+        const serviceFeeVal = document.getElementById('service-fee-val');
+        const grandTotalVal = document.getElementById('grand-total-val');
+
+        // Set default dates: tomorrow and 3 days after
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const dayAfter = new Date(tomorrow);
+        dayAfter.setDate(dayAfter.getDate() + 3);
+
+        const formatDate = (d) => d.toISOString().split('T')[0];
+
+        checkIn.min = formatDate(today);
+        checkIn.value = formatDate(tomorrow);
+        checkOut.min = formatDate(tomorrow);
+        checkOut.value = formatDate(dayAfter);
+
+        function updatePricing() {
+          if (!checkIn.value || !checkOut.value) return;
+          const d1 = new Date(checkIn.value);
+          const d2 = new Date(checkOut.value);
+          let nights = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
+          if (nights <= 0) nights = 1;
+
+          const base = pricePerNight * nights;
+          const cleaning = Math.round(base * 0.05);
+          const service = Math.round(base * 0.08);
+          const total = base + cleaning + service;
+
+          nightLabel.textContent = `₹${pricePerNight.toLocaleString('en-IN')} x ${nights} ${nights === 1 ? 'night' : 'nights'}`;
+          basePriceVal.textContent = `₹${base.toLocaleString('en-IN')}`;
+          cleaningFeeVal.textContent = `₹${cleaning.toLocaleString('en-IN')}`;
+          serviceFeeVal.textContent = `₹${service.toLocaleString('en-IN')}`;
+          grandTotalVal.textContent = `₹${total.toLocaleString('en-IN')}`;
+        }
+
+        checkIn.addEventListener('change', function() {
+          const nextDay = new Date(checkIn.value);
+          nextDay.setDate(nextDay.getDate() + 1);
+          checkOut.min = formatDate(nextDay);
+          if (new Date(checkOut.value) <= new Date(checkIn.value)) {
+            checkOut.value = formatDate(nextDay);
+          }
+          updatePricing();
+        });
+
+        checkOut.addEventListener('change', updatePricing);
+        updatePricing();
+      })();
+    </script>
+
+    <%- include('../partials/footer') %>
+  </body>
+</html>

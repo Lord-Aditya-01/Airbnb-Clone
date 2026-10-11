@@ -1,0 +1,186 @@
+<header class="sticky top-0 z-50 bg-white border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      
+      <!-- Left: Airbnb Brand Logo -->
+      <div class="flex-shrink-0">
+        <a href="/" class="flex items-center gap-2 group">
+          <svg class="h-8 w-auto text-[#FF385C] transition-transform duration-200 group-hover:scale-105" viewBox="0 0 32 32" fill="currentColor">
+            <path d="M16 1c2.008 0 3.463.963 4.751 3.269l.533 1.025c1.954 3.83 4.162 8.644 5.922 13.064 1.109 2.784 1.794 5.253 1.794 7.234 0 4.194-3.13 7.408-7.518 7.408-3.084 0-5.482-1.637-6.482-4.113-1 2.476-3.398 4.113-6.482 4.113-4.388 0-7.518-3.214-7.518-7.408 0-1.981.685-4.45 1.794-7.234 1.76-4.42 3.968-9.234 5.922-13.064l.533-1.025C12.537 1.963 13.992 1 16 1zm0 2c-1.396 0-2.482.684-3.528 2.551l-.546 1.05c-1.745 3.42-3.935 8.196-5.68 12.585-1.037 2.607-1.646 4.887-1.646 6.406 0 3.12 2.254 5.408 5.518 5.408 2.697 0 4.882-1.747 5.344-4.227l.102-.656.436-.089c.143-.029.289-.044.436-.044.147 0 .293.015.436.044l.436.089.102.656c.462 2.48 2.647 4.227 5.344 4.227 3.264 0 5.518-2.288 5.518-5.408 0-1.519-.609-3.799-1.646-6.406-1.745-4.389-3.935-9.165-5.68-12.585l-.546-1.05C18.482 3.684 17.396 3 16 3zm0 16.5c1.933 0 3.5 1.567 3.5 3.5s-1.567 3.5-3.5 3.5-3.5-1.567-3.5-3.5 1.567-3.5 3.5-3.5zm0 2c-.828 0-1.5.672-1.5 1.5s.672 1.5 1.5 1.5 1.5-.672 1.5-1.5-.672-1.5-1.5-1.5z"/>
+          </svg>
+          <span class="text-xl font-bold tracking-tight text-[#FF385C] hidden sm:inline">airbnb</span>
+        </a>
+      </div>
+
+      <!-- Center: Authentic Airbnb Search Pill -->
+      <div class="hidden md:flex items-center">
+        <form action="/" method="GET" class="flex items-center border border-gray-300 rounded-full py-2 px-4 shadow-sm hover:shadow-md transition duration-200 divide-x divide-gray-200">
+          <input 
+            type="text" 
+            name="search" 
+            placeholder="Anywhere (Search destination)" 
+            value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+            class="text-xs sm:text-sm font-semibold text-gray-800 placeholder-gray-700 bg-transparent px-3 outline-none w-48 lg:w-56"
+          />
+          <div class="hidden lg:block px-3 text-xs sm:text-sm font-semibold text-gray-800">Any week</div>
+          <div class="flex items-center pl-3">
+            <span class="text-xs sm:text-sm text-gray-500 font-normal mr-2 hidden lg:inline">Add guests</span>
+            <button type="submit" class="bg-[#FF385C] hover:bg-[#E00B41] text-white p-2.5 rounded-full flex items-center justify-center transition duration-200">
+              <i class="fas fa-search text-xs"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Right: Host link, Globe & User Profile Dropdown -->
+      <div class="flex items-center gap-2">
+        <% if (typeof isAuthenticated !== 'undefined' && isAuthenticated && typeof isHost !== 'undefined' && isHost) { %>
+          <a href="/host/host-home-list" class="text-sm font-medium text-gray-800 hover:bg-gray-100 py-2.5 px-3.5 rounded-full transition duration-150">
+            Host Dashboard
+          </a>
+          <a href="/host/add-home" class="hidden sm:inline-block text-sm font-medium text-gray-800 hover:bg-gray-100 py-2.5 px-3.5 rounded-full transition duration-150">
+            + Add Home
+          </a>
+        <% } else { %>
+          <a href="/become-host" class="text-sm font-medium text-gray-800 hover:bg-gray-100 py-2.5 px-3.5 rounded-full transition duration-150">
+            Airbnb your home
+          </a>
+        <% } %>
+
+        <!-- Language / Globe button -->
+        <button type="button" class="text-gray-700 hover:bg-gray-100 p-2.5 rounded-full transition duration-150" title="Language & Currency">
+          <i class="fas fa-globe text-sm"></i>
+        </button>
+
+        <!-- User Profile Menu Button & Dropdown -->
+        <div class="relative ml-1">
+          <button 
+            id="user-menu-button" 
+            type="button" 
+            class="flex items-center gap-3 border border-gray-300 rounded-full py-1.5 px-3.5 hover:shadow-md transition duration-200 bg-white"
+            aria-expanded="false" 
+            aria-haspopup="true">
+            <i class="fas fa-bars text-gray-600 text-xs"></i>
+            <div class="w-8 h-8 rounded-full bg-gray-500 text-white flex items-center justify-center text-xs font-semibold overflow-hidden">
+              <% if (typeof currentUser !== 'undefined' && currentUser) { %>
+                <span><%= currentUser.firstName.charAt(0).toUpperCase() %></span>
+              <% } else { %>
+                <i class="fas fa-user text-xs"></i>
+              <% } %>
+            </div>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div 
+            id="user-dropdown-menu" 
+            class="hidden absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl py-2 border border-gray-100 z-50 ring-1 ring-black ring-opacity-5 transition-all"
+            role="menu">
+            
+            <% if (typeof isAuthenticated !== 'undefined' && isAuthenticated && typeof currentUser !== 'undefined' && currentUser) { %>
+              <!-- Logged In User State -->
+              <div class="px-4 py-2 border-b border-gray-100">
+                <p class="text-xs text-gray-500">Signed in as</p>
+                <p class="text-sm font-semibold text-gray-900 truncate"><%= currentUser.firstName %> <%= currentUser.lastName %></p>
+                <span class="inline-block mt-1 px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider rounded <%= isHost ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-700' %>">
+                  <%= currentUser.userType === 'host' ? 'Host Account' : 'Guest Account' %>
+                </span>
+              </div>
+
+              <a href="/bookings" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-800 hover:bg-gray-50 font-medium">
+                <i class="fas fa-suitcase text-gray-400 w-4"></i> Trips & Bookings
+              </a>
+              <a href="/favourites" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-800 hover:bg-gray-50 font-medium">
+                <i class="fas fa-heart text-gray-400 w-4"></i> Wishlists
+              </a>
+              <a href="/homes" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-800 hover:bg-gray-50 font-medium">
+                <i class="fas fa-compass text-gray-400 w-4"></i> Explore Stays
+              </a>
+
+              <div class="border-t border-gray-100 my-1"></div>
+
+              <% if (isHost) { %>
+                <a href="/host/host-home-list" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-800 hover:bg-gray-50 font-medium">
+                  <i class="fas fa-tasks text-gray-400 w-4"></i> Manage Listings
+                </a>
+                <a href="/host/add-home" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-800 hover:bg-gray-50 font-medium">
+                  <i class="fas fa-plus text-gray-400 w-4"></i> Create Listing
+                </a>
+              <% } else { %>
+                <a href="/become-host" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-800 hover:bg-gray-50 font-medium">
+                  <i class="fas fa-home text-gray-400 w-4"></i> Become a Host
+                </a>
+              <% } %>
+
+              <div class="border-t border-gray-100 my-1"></div>
+
+              <form action="/logout" method="POST" class="w-full">
+                <button type="submit" class="flex items-center gap-3 w-full text-left px-4 py-3 text-sm text-rose-600 hover:bg-rose-50 font-medium">
+                  <i class="fas fa-sign-out-alt text-rose-500 w-4"></i> Log out
+                </button>
+              </form>
+
+            <% } else { %>
+              <!-- Guest / Unauthenticated State -->
+              <a href="/signup" class="block px-4 py-3 text-sm text-gray-900 font-semibold hover:bg-gray-50">
+                Sign up
+              </a>
+              <a href="/login" class="block px-4 py-3 text-sm text-gray-800 hover:bg-gray-50">
+                Log in
+              </a>
+
+              <div class="border-t border-gray-100 my-1"></div>
+
+              <a href="/become-host" class="block px-4 py-3 text-sm text-gray-800 hover:bg-gray-50">
+                Airbnb your home
+              </a>
+              <a href="/homes" class="block px-4 py-3 text-sm text-gray-800 hover:bg-gray-50">
+                Explore all homes
+              </a>
+            <% } %>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Mobile Search Bar (Visible on small screens) -->
+    <div class="md:hidden pb-4">
+      <form action="/" method="GET" class="flex items-center border border-gray-300 rounded-full py-2.5 px-4 shadow-sm bg-gray-50">
+        <i class="fas fa-search text-gray-500 mr-3 text-sm"></i>
+        <input 
+          type="text" 
+          name="search" 
+          placeholder="Where to? (Search stays, cities...)" 
+          value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+          class="text-sm text-gray-800 bg-transparent outline-none w-full"
+        />
+        <button type="submit" class="bg-[#FF385C] text-white p-2 rounded-full text-xs flex-shrink-0">
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </form>
+    </div>
+
+  </div>
+</header>
+
+<!-- JavaScript for User Dropdown toggle -->
+<script>
+  (function() {
+    const btn = document.getElementById('user-menu-button');
+    const menu = document.getElementById('user-dropdown-menu');
+
+    if (btn && menu) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        menu.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!menu.contains(e.target) && !btn.contains(e.target)) {
+          menu.classList.add('hidden');
+        }
+      });
+    }
+  })();
+</script>

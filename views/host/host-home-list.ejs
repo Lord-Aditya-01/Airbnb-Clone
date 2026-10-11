@@ -1,0 +1,129 @@
+<%- include('../partials/head') %>
+  </head>
+  <body class="bg-gray-50 flex flex-col min-h-screen">
+    <%- include('../partials/nav') %>
+    <%- include('../partials/flash') %>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+      
+      <!-- Host Dashboard Header -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Host Dashboard</h1>
+            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-full uppercase">Host Mode</span>
+          </div>
+          <p class="text-sm text-gray-500 mt-1">Manage your active listings, pricing, and guest reviews.</p>
+        </div>
+
+        <a href="/host/add-home" class="bg-[#FF385C] hover:bg-[#E00B41] text-white font-semibold py-3 px-6 rounded-xl shadow-md transition duration-200 text-sm flex items-center gap-2">
+          <i class="fas fa-plus"></i>
+          <span>Create New Listing</span>
+        </a>
+      </div>
+
+      <!-- Quick Metrics -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+          <p class="text-xs font-bold uppercase tracking-wider text-gray-500">Your Listings</p>
+          <p class="text-3xl font-black text-gray-900 mt-2"><%= registeredHomes.length %></p>
+          <p class="text-xs text-gray-400 mt-1">Active and visible to guests</p>
+        </div>
+        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+          <p class="text-xs font-bold uppercase tracking-wider text-gray-500">AirCover Protection</p>
+          <div class="flex items-center gap-2 mt-2">
+            <i class="fas fa-shield-check text-emerald-500 text-2xl"></i>
+            <span class="text-xl font-bold text-gray-900">Active</span>
+          </div>
+          <p class="text-xs text-emerald-600 mt-1 font-medium">$3M Host damage protection</p>
+        </div>
+        <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+          <p class="text-xs font-bold uppercase tracking-wider text-gray-500">Hosting Status</p>
+          <div class="flex items-center gap-2 mt-2">
+            <i class="fas fa-medal text-amber-500 text-2xl"></i>
+            <span class="text-xl font-bold text-gray-900">Verified Host</span>
+          </div>
+          <p class="text-xs text-gray-400 mt-1">Ready to receive bookings</p>
+        </div>
+      </div>
+
+      <!-- Listings Table / Grid -->
+      <% if (typeof registeredHomes !== 'undefined' && registeredHomes.length > 0) { %>
+        <div class="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-bold text-gray-900">Your Published Listings</h2>
+          </div>
+
+          <div class="divide-y divide-gray-200">
+            <% registeredHomes.forEach(home => { %>
+              <div class="p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 hover:bg-gray-50/50 transition duration-150">
+                
+                <!-- Listing Information -->
+                <div class="flex items-center gap-4">
+                  <img 
+                    src="<%= home.photoUrl || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800' %>" 
+                    alt="<%= home.houseName %>" 
+                    class="w-20 h-20 rounded-2xl object-cover flex-shrink-0 border border-gray-200"
+                  />
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="bg-gray-100 text-gray-700 text-[11px] font-semibold px-2 py-0.5 rounded-full">
+                        <%= home.category || 'Listing' %>
+                      </span>
+                      <span class="text-xs text-emerald-600 font-semibold flex items-center">
+                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1"></span> Live
+                      </span>
+                    </div>
+                    <h3 class="text-base font-bold text-gray-900 mt-1"><%= home.houseName %></h3>
+                    <p class="text-xs text-gray-500 mt-0.5"><i class="fas fa-location-dot mr-1"></i> <%= home.location %></p>
+                    <div class="flex items-center gap-3 mt-1.5 text-xs text-gray-600">
+                      <span><strong>₹<%= Number(home.price).toLocaleString('en-IN') %></strong> / night</span>
+                      <span>·</span>
+                      <span><i class="fas fa-star text-black mr-0.5 text-[10px]"></i> <%= home.rating %> (<%= home.reviews ? home.reviews.length : 0 %> reviews)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Host Actions -->
+                <div class="flex items-center gap-3 self-end md:self-center">
+                  <a href="/homes/<%= home.id %>" class="text-xs font-semibold text-gray-700 hover:text-black border border-gray-300 hover:border-black px-3.5 py-2.5 rounded-xl transition">
+                    <i class="far fa-eye mr-1"></i> Preview
+                  </a>
+                  
+                  <a href="/host/edit-home/<%= home.id %>?editing=true" class="text-xs font-semibold text-gray-900 hover:bg-gray-100 border border-gray-300 px-3.5 py-2.5 rounded-xl transition">
+                    <i class="far fa-edit mr-1"></i> Edit
+                  </a>
+
+                  <form action="/host/delete-home/<%= home.id %>" method="POST" onsubmit="return confirm('Are you sure you want to delete this listing permanently?');">
+                    <button type="submit" class="text-xs font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200 px-3.5 py-2.5 rounded-xl transition">
+                      <i class="far fa-trash-alt mr-1"></i> Delete
+                    </button>
+                  </form>
+                </div>
+
+              </div>
+            <% }) %>
+          </div>
+        </div>
+
+      <% } else { %>
+        <!-- Empty State -->
+        <div class="bg-white rounded-3xl border border-gray-200 p-12 text-center max-w-lg mx-auto shadow-sm my-8">
+          <div class="w-20 h-20 bg-rose-50 text-[#FF385C] rounded-full flex items-center justify-center mx-auto mb-5 text-3xl">
+            <i class="fas fa-home"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-900 mb-2">You don't have any listings yet</h2>
+          <p class="text-sm text-gray-500 mb-8 max-w-sm mx-auto">
+            Ready to become an active host? Share your space and start earning with Airbnb.
+          </p>
+          <a href="/host/add-home" class="inline-block bg-[#FF385C] hover:bg-[#E00B41] text-white font-semibold py-3.5 px-8 rounded-xl shadow-md transition duration-200 text-sm">
+            + Create Your First Listing
+          </a>
+        </div>
+      <% } %>
+
+    </main>
+
+    <%- include('../partials/footer') %>
+  </body>
+</html>
